@@ -15,7 +15,7 @@ def check_disk(mounted_on='/'):
             res = line.split(' ')
             if res[5] == mounted_on:
                 return res
-        return False
+    return False
 
 
 # 查看进程运行情况
