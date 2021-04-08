@@ -61,6 +61,9 @@ if __name__ == '__main__':
     else:
         disks = [disk_mounted_on]
 
+    now_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    if Config.params['debug']:
+        print("运行时间：", now_time)
     for disk in disks:
         disk_info = check_disk(disk)
         # ['/dev/vda1', '40G', '25G', '13G', '66%', '/']
@@ -73,7 +76,7 @@ if __name__ == '__main__':
                 disk_info[2],
                 disk_info[3],
                 disk_info[4],
-                datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                now_time,
                 mobile_text
             )
             print(text_disk)
@@ -85,7 +88,7 @@ if __name__ == '__main__':
             title = '进程运行异常'
             text_process = "### 进程运行异常\n- 进程：{}\n### 时间：{}\n{}\n".format(
                 process,
-                datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                now_time,
                 mobile_text
             )
             print(text_process)
@@ -98,7 +101,7 @@ if __name__ == '__main__':
             text_job = "### 队列运行异常\n- 队列：{}\n- 当前状态：{}\n### 时间：{}\n{}\n".format(
                 job,
                 status,
-                datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                now_time,
                 mobile_text
             )
             print(text_job)
