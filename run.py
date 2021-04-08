@@ -62,7 +62,7 @@ if __name__ == '__main__':
         disks = [disk_mounted_on]
 
     now_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    if Config.params['debug']:
+    if config_system['debug']:
         print("运行时间：", now_time)
     for disk in disks:
         disk_info = check_disk(disk)
