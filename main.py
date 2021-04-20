@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from utils import response
 from router import api
+from Config import *
 
 app = FastAPI()
 
@@ -24,4 +25,6 @@ app.include_router(api.router, prefix='/sys-status/api')
 
 
 if __name__ == '__main__':
-    uvicorn.run(app='main:app', host="127.0.0.1", port=8005, reload=True, debug=False)
+    config_system = Config.params['system']
+    port = config_system['service-port']
+    uvicorn.run(app='main:app', host="127.0.0.1", port=int(port), reload=False, debug=False)
