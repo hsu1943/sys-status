@@ -58,8 +58,7 @@ if __name__ == '__main__':
     if config_system['debug']:
         print("运行时间：", now_time)
 
-    all_data = {}
-
+    all_data = {'time': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
     # 磁盘占用
     if config_system['disk']:
         disk_mounted_on = config_alarm['disk-mounted-on']
@@ -71,7 +70,13 @@ if __name__ == '__main__':
         for disk in disks:
             disk_info = check_disk(disk)
             # ['/dev/vda1', '40G', '25G', '13G', '66%', '/']
-            disk_data.append({disk: disk_info[4]})
+            disk_data.append({
+                "filesystem": disk,
+                "size": disk_info[1],
+                "used": disk_info[2],
+                "avail": disk_info[3],
+                "use%": disk_info[4]
+            })
             # 磁盘空间占用大于90%
             if disk_info and disk_info[4].replace("%", "") > config_alarm['disk-usage']:
                 title = "磁盘空间不足"
@@ -95,7 +100,10 @@ if __name__ == '__main__':
         process_data = []
         for process, process_text in config_process.items():
             if len(process_text) and len(check_process(process_text)) < 1:
-                process_data.append({process: "异常"})
+                process_data.append({
+                    "process": process,
+                    "status": "NOT FOUND"
+                })
                 title = '进程运行异常'
                 text_process = "### 进程运行异常\n- 进程：{}\n### 时间：{}\n{}\n".format(
                     process,
@@ -105,17 +113,23 @@ if __name__ == '__main__':
                 print(text_process)
                 ding.send_markdown(title, text_process, ding_mobiles)
             else:
-                process_data.append({process: "正在运行"})
+                process_data.append({
+                    "process": process,
+                    "status": "RUNNING"
+                })
 
         all_data['process_data'] = process_data
 
     # 查看 supervisor 服务
     if config_system['supervisor']:
         config_supervisor = Config.params['supervisor']
-        excludes = config_supervisor['excludes'].split(',')
+        excludes = config_supervisor['exclude'].split(',')
         supervisor_data = []
         for job, status in check_supervisor(config_system['sudo-password']).items():
-            supervisor_data.append({job: status})
+            supervisor_data.append({
+                "service": job,
+                "status": status
+            })
             if job not in excludes and status != 'RUNNING':
                 title = '服务运行异常'
                 text_job = "### 服务运行异常\n- 异常服务：{}\n- 当前状态：{}\n### 时间：{}\n{}\n".format(
@@ -128,14 +142,11 @@ if __name__ == '__main__':
                 ding.send_markdown(title, text_job, ding_mobiles)
         all_data['supervisor_data'] = supervisor_data
 
-    all_data['time'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
     # 写入数据
     # 调试代码
-    print(all_data)
+    # print("\n此次运行要存入的数据：")
+    # print(all_data)
     handler(15 * 60, all_data)
     handler(60 * 60, all_data)
     handler(24 * 60 * 60, all_data)
-    # 调试代码
-    print(get_data(15 * 60, 10))
 
