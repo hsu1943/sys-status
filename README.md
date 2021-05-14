@@ -1,11 +1,20 @@
+项目地址：[hsu1943/sys-status](https://github.com/hsu1943/sys-status)
+
 一个使用 Python 实现的 Linux 服务器监控工具，钉钉机器人异常警报，外部api访问获取历史数据。
 
-使用 Python 3.7+ 版本测试通过。
+使用 Python 3.7+ 在 CentOS 7.2 服务器测试通过，不同服务器可能有差别。
+
+### 需求
+- python3.7+
+
+- sqlite3
+
+  即 import sqlite3 正常无报错
 
 ### 功能
 
 - 检查硬盘占用
-    
+  
   可指定检查多个挂载路径，以及占用百分比阈值，超过阈值发出警报；
   
 - 检查进程运行情况
@@ -15,7 +24,7 @@
 - 检查 supervisor 守护程序守护的进程运行情况
 
   非 RUNNING 状态时发出报警；
- 
+
  - 使用钉钉群机器人报警；
   
  - 提供外部访问api，获取运行情况历史记录；
@@ -52,7 +61,7 @@ python ./main.py
 
 服务将会运行在配置文章中指定的端口`service-port`上（默认8008）。
 
-#### 访问
+#### 接口地址
 ```bash
 GET http://127.0.0.1:8008/sys-status/api?gap=900&limit=30
 ```
